@@ -30,33 +30,38 @@ def iothub_client_telemetry_sample_run():
         print("Sending data to IoT Hub, press Ctrl-C to exit")
         
         # Lists to store accelerometer data and time
-        accelerometer_y_data = []
+        accelerometer_data = {'x': [], 'y': [], 'z': []}
         timestamps = []
         
         plt.ion()  # Turn on interactive mode
         
-        fig, ax = plt.subplots()  # Create figure and axis objects
+        fig, ax = plt.subplots(3, 1, figsize=(10, 10), sharex=True)  # Create figure and axis objects with shared x-axis
+        
+        plt.subplots_adjust(hspace=0.5)  # Adjust vertical space between subplots
         
         while True:  
-            accelerometer_data, temperature = read_sensor_data()
-            accelerometer_y = accelerometer_data['y']
-            
-            # Append data to lists
-            accelerometer_y_data.append(accelerometer_y)
+            accelerometer_data_raw, temperature = read_sensor_data()
+            accelerometer_data['x'].append(accelerometer_data_raw['x'])
+            accelerometer_data['y'].append(accelerometer_data_raw['y'])
+            accelerometer_data['z'].append(accelerometer_data_raw['z'])
             timestamps.append(time.time())
             
-            msg_txt_formatted = MSG_SND.format(accelerometer=accelerometer_data, temperature=temperature)  
+            msg_txt_formatted = MSG_SND.format(accelerometer=accelerometer_data_raw, temperature=temperature)  
             message = Message(msg_txt_formatted)  
             client.send_message(message)
+
+	    
             
             print("Message successfully sent")
+            print(accelerometer_data_raw)
             
             # Update plot
-            ax.clear()
-            ax.plot(timestamps, accelerometer_y_data)
-            ax.set_xlabel('Time')
-            ax.set_ylabel('Accelerometer Y-axis')
-            ax.set_title('Accelerometer Y-axis Data Over Time')
+            for i, (axis, data) in enumerate(accelerometer_data.items()):
+                ax[i].clear()
+                ax[i].plot(timestamps, data)
+                ax[i].set_ylabel(f'Accelerometer {axis}-axis')
+                ax[i].set_title(f'Accelerometer {axis}-axis Data Over Time')
+            ax[2].set_xlabel('Time')  # Set x-label only for the last subplot
             fig.canvas.draw()
             fig.canvas.flush_events()
             
@@ -69,4 +74,3 @@ def iothub_client_telemetry_sample_run():
 if __name__ == '__main__':  
     print("Press Ctrl-C to exit")  
     iothub_client_telemetry_sample_run()
-
