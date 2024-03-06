@@ -20,15 +20,6 @@ This project focuses on processing accelerometer data and visualizing it in both
 - Matplotlib
 - Azure SDK for Python
 
-## Usage
-
-1. Ensure you have an Azure account and set up Azure Blob Storage for data storage.
-2. Configure Azure credentials in your environment.
-3. Modify the `push_to_azure.py` script to include your Azure Blob Storage details.
-4. Provide accelerometer data as input to the `push_to_azure.py` script.
-5. Run the script to push data to Azure.
-6. Use the `analyze_accelerometer_data.py` script to perform analysis and generate visualizations locally.
-
 Example usage:
 ## Azure IOT Hub:
 ![image](https://github.com/sundaram123krishnan/Accelerometer-Analysis-Time-Frequency/assets/104441812/b55ef837-9833-4a32-bbe8-778fd170683d)
